@@ -6,6 +6,7 @@ package
 	import net.flashpunk.Entity;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Backdrop;
+	import net.flashpunk.Tween;
 	import net.flashpunk.World;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.FP;
@@ -24,15 +25,22 @@ package
 		
 		private var PlayerEntity_:Player;
 		private var KittentEntity_:Kittent;
+		private var GoatEntity_:Goat;
 		
 		private var PlayerHasAnimal_:Boolean = false;
+		private var CloudTween_:Tween;
+		private var CloudEntity_:Entity;
+		
+		private var Level1Done_:Boolean = false;
+		private var LoadGoatLevel_:Boolean = false;
 		
 		
 		public static var EntityMap:Dictionary = new Dictionary;
 
 		public function VetWorld()
 		{
-
+			CloudTween_ = new Tween(1.0, Tween.PERSIST, CloudDone);
+			CloudEntity_ = new Entity(40, 120, new Image(Assets.CloudImage));
 		}
 		
 		public function loadEntities(xml:Class):void
@@ -67,6 +75,11 @@ package
 					EntityMap["Kittent"] = KittentEntity_;
 					break;
 					
+				case "Goat":
+					GoatEntity_ = new Goat();
+					EntityMap["Goat"] = GoatEntity_;
+					break;
+					
 				default:
 					//trace("No associated entity");
 					if (dataElement.ImageDefinition.@DrawMode == "Image") {
@@ -91,20 +104,39 @@ package
 			
 			var x:int, y:int, width:int, height:int, LevelWidth:int, LevelHeight:int;
 			
-			x = PlayerEntity_.x;
-			y = PlayerEntity_.y;
-			width = PlayerEntity_.width;
-			height = PlayerEntity_.height;
+			if( PlayerEntity_.Controllable == true) {
+				x = PlayerEntity_.x;
+				y = PlayerEntity_.y;
+				width = PlayerEntity_.width;
+				height = PlayerEntity_.height;
+			} else {
+				x = KittentEntity_.x;
+				y = KittentEntity_.y;
+				width = KittentEntity_.width;
+				height = KittentEntity_.height;
+			}
+			
 			LevelWidth = CurrentLevel.LevelWidth_;
 			LevelHeight = CurrentLevel.LevelHeight_;
 			
 			// Don't let player go off the level
-			if (x < 0) {
-				PlayerEntity_.moveBy( -x, 0);
-			}
-			
-			if (x > (LevelWidth - width)) {
-				PlayerEntity_.moveBy((LevelWidth - width) - x, 0);
+			if( PlayerEntity_.Controllable == true) {
+				if (x < 0) {
+					PlayerEntity_.moveBy( -x, 0);
+				}
+				
+				if (x > (LevelWidth - width)) {
+					PlayerEntity_.moveBy((LevelWidth - width) - x, 0);
+				}
+			} else {
+				if (x < 0) {
+					KittentEntity_.moveBy( -x, 0);
+				}
+				
+				if (x > (LevelWidth - width)) {
+					KittentEntity_.moveBy((LevelWidth - width) - x, 0);
+				}
+
 			}
 					
 			
@@ -123,15 +155,34 @@ package
 			if (FP.camera.y < 0) FP.camera.y = 0;
 			if (FP.camera.y > (LevelHeight - Assets.kScreenHeight)) FP.camera.y = LevelHeight - Assets.kScreenHeight;
 			
-			if (PlayerEntity_.collide("kittent", x, y)) {
-				PlayerEntity_.carryAnimal(KittentEntity_);
-				PlayerHasAnimal_ = true;
+			if (PlayerEntity_.collide("kittent", PlayerEntity_.x, PlayerEntity_.y)) {
+				if (PlayerEntity_.IsMonster == true) {
+					//FP.world = new ScreenWorld(Assets.GameOver, ScreenWorld.EndScreen);
+				} else {
+					PlayerEntity_.carryAnimal(KittentEntity_);
+					PlayerHasAnimal_ = true;
+				}
+			}
+			
+			if (PlayerEntity_.collide("goat", PlayerEntity_.x, PlayerEntity_.y) != null) {
+				FP.world = new ScreenWorld(Assets.GoatWins, ScreenWorld.EndScreen);
 			}
 			
 			if ( (PlayerHasAnimal_ == true) && (PlayerEntity_.collide("table", PlayerEntity_.x, PlayerEntity_.y) != null) ) {
+				PlayerHasAnimal_ = false;
 				KittentEntity_.visible = false;
-				FP.world = new ScreenWorld(Assets.YouWin, ScreenWorld.EndScreen);
+				KittentEntity_.collidable = false;
+				PlayerEntity_.GiveUpControl();
+				
+				add(CloudEntity_);
+				addTween(CloudTween_, true);
 			}
+		}
+		
+		public function CloudDone():void
+		{
+			Level1Done_ = true;
+			FP.world = new ScreenWorld(Assets.ExamComplete, ScreenWorld.Transition, 1.0, this);			
 		}
 		
 		public function changeLevel(levelData:Class):void 
@@ -164,14 +215,28 @@ package
 		
 		override public function begin():void
 		{
-			// Get our entities from Ogmo file
-			loadEntities(Assets.VetOgmoFile);		
-			changeLevel(Assets.Level1);
+			if (Level1Done_) {
+				changeLevel(Assets.Level2);
+				GoatEntity_.DoHeadbutt();
+				PlayerEntity_.LookRight();
+				PlayerEntity_.Controllable = true;
+				
+				//KittentEntity_.AssumeControl();
+				//KittentEntity_.visible = true;
+				//changeLevel(Assets.Level1);
+				//
+				//PlayerEntity_.update();
+				//PlayerEntity_.MakeMonster();
+			} else {
+				// Get our entities from Ogmo file
+				loadEntities(Assets.VetOgmoFile);		
+				changeLevel(Assets.Level1);
 			
-			super.begin();
+				super.begin();
 			
-			// Make the kittent run
-			KittentEntity_.StartCountdown();
+				// Make the kittent run
+				KittentEntity_.StartCountdown();
+			}
 		}
 	}
 		

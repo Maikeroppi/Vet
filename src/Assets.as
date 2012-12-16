@@ -40,11 +40,24 @@ package
 		[Embed(source = "../data/StartScreen.png")]
 		public static const StartScreen:Class;
 		
-		[Embed(source = "../data/YouWin.png")]
-		public static const YouWin:Class;
+
 		
-		[Embed(source = "../data/GameOver.png")]
-		public static const GameOver:Class;
+
+		
+		[Embed(source = "../data/ExamComplete.png")]
+		public static const ExamComplete:Class;
+		
+		[Embed(source = "../data/GoatWins.png")]
+		public static const GoatWins:Class;
+		
+		[Embed(source = "../data/Cloud.png")]
+		public static const CloudImage:Class;
+		
+		[Embed(source = "../data/Level2.oel", mimeType = "application/octet-stream")]
+		public static const Level2:Class;
+		
+		[Embed(source = "../data/Music to Delight.mp3")]
+		public static const GoatWinsMusic:Class;
 		
 		
 		public static var ImageDictionary:Object = {

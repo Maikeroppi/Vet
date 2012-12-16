@@ -14,13 +14,13 @@ import net.flashpunk.FP;
 		{
 			super(Assets.kScreenWidth, Assets.kScreenHeight, 60, false);
 			FP.screen.scale = 2;
-			FP.console.enable();
+			//FP.console.enable();
 		}
 		
 		override public function init():void 
 		{
-			//FP.world = new ScreenWorld(Assets.StartScreen, ScreenWorld.StartScreen);
-			FP.world = new VetWorld();
+			FP.world = new ScreenWorld(Assets.StartScreen, ScreenWorld.StartScreen);
+			//FP.world = new VetWorld();
 			FP.screen.color = Assets.kBackgroundcolor;
 			
 			super.init();

@@ -55,7 +55,7 @@
 		 */
 		public function addTween(t:Tween, start:Boolean = false):Tween
 		{
-		if (t._parent) throw new Error("Cannot add a Tween object more than once.");
+			if (t._parent) throw new Error("Cannot add a Tween object more than once.");
 			t._parent = this;
 			t._next = _tween;
 			if (_tween) _tween._prev = t;
