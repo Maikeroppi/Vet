@@ -12,8 +12,8 @@ import net.flashpunk.FP;
 		
 		public function Main():void 
 		{
-			super(160, 120, 60, false);
-			FP.screen.scale = 4;
+			super(Assets.kScreenWidth, Assets.kScreenHeight, 60, false);
+			FP.screen.scale = 2;
 			FP.console.enable();
 		}
 		

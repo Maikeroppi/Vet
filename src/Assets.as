@@ -58,8 +58,8 @@ package
 		};
 			
 		// Set screen size
-		public static const kScreenWidth:int = 160;
-		public static const kScreenHeight:int = 120;
+		public static const kScreenWidth:int = 320;
+		public static const kScreenHeight:int = 240;
 		public static const kBackgroundcolor:uint = 0xFFFFFFFF;
 		
 		// Set tile parameters
