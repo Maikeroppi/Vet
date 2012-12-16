@@ -1,0 +1,14 @@
+TODO:
+**DONE**Add some obstacles for failure
+**DONE**Add jumping
+**DONE**Add collision detection to table for the "win" condition
+**DONE**Fix bug where cat drops out of player's hands (it's new)
+**DONE**Add Game Over / Win / Start Screens
+**DONE**Make cat / animal run away from you
+"Fix" the horrible graphics (by redoing them)
+Add like, sounds and music and stuff
+Add additional animals
+Add timeout failure (needed?)
+
+Upload Game
+Get hilariously inebriated
